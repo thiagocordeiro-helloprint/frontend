@@ -37,10 +37,8 @@
         </form>
       </div>
 
-      <div id="loggedInBox" style="display: none">
-        <div class="alert alert-success">
-          You are logged-in
-        </div>
+      <div id="loggedInBox" class="alert alert-success" style="display: none">
+        You are logged-in
       </div>
 
     </div>
@@ -57,7 +55,7 @@
               return;
           }
 
-          $('.alert').hide();
+          $('#loginBox .alert').hide();
           $('.btn').attr('disabled', 'disabled');
 
           $.ajax({
@@ -68,7 +66,7 @@
               data: JSON.stringify({ "email": email })
           })
               .done(function () {
-                  $('.alert.alert-success').show();
+                  $('#loginBox .alert.alert-success').show();
               })
               .fail(handleError)
               .always(handleAjaxDone)
@@ -105,6 +103,16 @@
 
       function handleError(response) {
           var alertBox = $('.alert.alert-danger');
+          if (response.status === 401) {
+              alertBox.html('Invalid credentials').show();
+              return;
+          }
+
+          if (response.status === 403) {
+              alertBox.html('User inactive').show();
+              return;
+          }
+
           if (response.status === 404) {
               alertBox.html('User not found').show();
               return;
